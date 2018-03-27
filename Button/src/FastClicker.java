@@ -3,36 +3,51 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.animation.AnimationTimer; 
 
-public class FastClicker extends Application {
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
-    @Override
+public class FastClicker{
+	private boolean scoring;
+	private int score;
+	private double timeStep;
+	
     public void start(Stage primaryStage) {
-    	new AnimationTimer() {
-
+        primaryStage.setTitle("Clickerizer!");
         Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
- 
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-			@Override
-			public void handle(long arg0) {
-				// TODO Auto-generated method stub
-				
-			}
+        Text txt = new Text(10,0,"Click Score");
+        btn.setOnAction(new EventHandler<ActionEvent>(){
+        	public void handle(ActionEvent event) {
+        		if(scoring) {
+        			score++;
+        		}
+        		else {
+        			score--;
+        		}
+        	}
         });
-    	}
+        
+        timeStep = System.nanoTime() + 1000000000L;
+        new AnimationTimer() {
+        	public void handle(long now) {
+        		if(now > timeStep) {
+        			timeStep = now + 1000000000L;
+        			scoring = !scoring;
+        		}
+        		if(!scoring) {
+        			btn.setText("Don't Click");
+        		}
+        		else {
+        			btn.setText("Click Me!");
+        		}
+        		
+        		txt.setText("Score:" + Integer.toString(score));
+        	}
+        }.start();
         StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
-        primaryStage.show();
+        HBox hbox = new HBox();
+        hbox.getChildren().addAll(btn.txt);
     }
 }
